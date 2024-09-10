@@ -9,7 +9,7 @@
         public string Comments { get; set; }
 
         // Relationships
-        public Customer Customer { get; set; } // Many-to-One
-        public SupportRequest SupportRequest { get; set; } // Many-to-One
+        public Customer Customer { get; set; }
+        public SupportRequest SupportRequest { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dern_Support_System.Repository.Services
 {
-    public class TechnicianService : ITechnician
+    public class TechnicianService : ITechnician 
     {
         private readonly DernSupportDbContext _dbContext;
 
@@ -60,23 +60,27 @@ namespace Dern_Support_System.Repository.Services
         public async Task DeleteTechnicianAsync(int technicianId)
         {
             var technician = await GetTechnicianByIdAsync(technicianId);
-            _dbContext.Technicians.Remove(technician);
-            await _dbContext.SaveChangesAsync();
+            if (technician != null)
+            {
+                _dbContext.Technicians.Remove(technician);
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"Technician with ID {technicianId} not found.");
+            }
         }
 
-        public async Task<List<Project>> GetProjectsForTechnician(int technicianId)
+        public async Task<List<TechnicianTask>> GetTasksForTechnician(int technicianId)
         {
-            var projetcsForTechnician = await _dbContext.TechnicianProjectsDBset
-               .Where(ep => ep.TechnicianId == technicianId)
-               .Select(ep => ep.Project)
-               .ToListAsync();
-
-            return projetcsForTechnician;
+            return await _dbContext.TechnicianTasks
+                .Where(tt => tt.TechnicianId == technicianId)
+                .ToListAsync();
         }
 
         public async Task<TechnicianTask> SubmitARequest(TechnicianTask technicianTask)
         {
-            _dbContext.TechnicianTasksDb.Add(technicianTask);
+            _dbContext.TechnicianTasks.Add(technicianTask);
             await _dbContext.SaveChangesAsync();
 
             return technicianTask;
@@ -84,13 +88,12 @@ namespace Dern_Support_System.Repository.Services
 
         public async Task<List<TechnicianTask>> GetAllSubmittedTasks()
         {
-            return await _dbContext.TechnicianTasksDb.ToListAsync();
+            return await _dbContext.TechnicianTasks.ToListAsync();
         }
 
         public async Task<TechnicianTask> UpdateRequestStatus(int taskId, string status)
         {
-
-            var task = await _dbContext.TechnicianTasksDb.FindAsync(taskId);
+            var task = await _dbContext.TechnicianTasks.FindAsync(taskId);
             if (task == null)
             {
                 throw new Exception("Task not found");

@@ -2,7 +2,7 @@
 
 namespace Dern_Support_System.Models
 {
-    public class Customer 
+    public class Customer
     {
         public int CustomerId { get; set; }
         public string Name { get; set; }
@@ -14,7 +14,7 @@ namespace Dern_Support_System.Models
         public string CustomerType { get; set; } // Business or Individual
 
         // Relationships
-        public ICollection<SupportRequest> SupportRequests { get; set; } // One-to-Many
-        public ICollection<Feedback> Feedbacks { get; set; } // One-to-Many
+        public ICollection<SupportRequest> SupportRequests { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
     }
 }

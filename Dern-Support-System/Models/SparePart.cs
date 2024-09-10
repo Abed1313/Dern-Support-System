@@ -8,7 +8,7 @@
         public int ReorderThreshold { get; set; }
         public decimal PricePerUnit { get; set; }
 
-        // Many-to-Many relationship with RepairJob
+        // Relationships
         public ICollection<RepairJobSparePart> RepairJobSpareParts { get; set; }
     }
 }

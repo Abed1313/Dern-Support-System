@@ -12,7 +12,7 @@ namespace Dern_Support_System.Repository.interfaces
         Task DeleteTechnicianAsync(int technicianId);
 
         // New Tasks
-        Task<List<Project>> GetProjectsForTechnician(int technicianId);
+        Task<List<TechnicianTask>> GetTasksForTechnician(int technicianId);
         Task<TechnicianTask> SubmitARequest(TechnicianTask technicianTask);
         Task<List<TechnicianTask>> GetAllSubmittedTasks();
         Task<TechnicianTask> UpdateRequestStatus(int taskId, string status);

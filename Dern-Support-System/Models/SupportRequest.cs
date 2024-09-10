@@ -7,14 +7,14 @@
         public string Description { get; set; }
         public string Priority { get; set; }
         public string Status { get; set; }
-        public int? QuoteId { get; set; } // Nullable if no quote yet
+        public int? QuoteId { get; set; }
 
         // Relationships
-        public Customer Customer { get; set; } // Many-to-One
-        public Quote Quote { get; set; } // One-to-One
-        public ICollection<RepairJob> RepairJobs { get; set; } // One-to-Many
-        public ICollection<Feedback> Feedback { get; set; } // One-to-Many
-        public int? KnowledgeBaseId { get; set; } // Nullable if no article referenced
-        public KnowledgeBase KnowledgeBaseArticle { get; set; } // Many-to-One
+        public Customer Customer { get; set; }
+        public Quote Quote { get; set; }
+        public ICollection<RepairJob> RepairJobs { get; set; }
+        public ICollection<Feedback> Feedback { get; set; }
+        public int? KnowledgeBaseId { get; set; }
+        public KnowledgeBase KnowledgeBaseArticle { get; set; }
     }
-    }
+}

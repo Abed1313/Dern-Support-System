@@ -8,6 +8,6 @@
         public decimal FinalCost { get; set; }
 
         // Relationships
-        public SupportRequest SupportRequest { get; set; } // One-to-One
+        public SupportRequest SupportRequest { get; set; }
     }
 }

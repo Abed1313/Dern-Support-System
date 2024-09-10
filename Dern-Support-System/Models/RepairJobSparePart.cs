@@ -8,6 +8,6 @@
         public int SparePartId { get; set; }
         public SparePart SparePart { get; set; }
 
-        public int Quantity { get; set; } // Quantity of the spare part used
+        public int Quantity { get; set; }
     }
 }

@@ -8,10 +8,7 @@
         public string Availability { get; set; }
 
         // Relationships
-        public ICollection<RepairJob> RepairJobs { get; set; } // One-to-Many
-        public ICollection<TechnicianProjects> technicianProjects { get; set; }
-
-        public ICollection<TechnicianTask> technicianTasks { get; set; }  // An employee can have many tasks
-
+        public ICollection<RepairJob> RepairJobs { get; set; }
+        public ICollection<TechnicianTask> TechnicianTasks { get; set; }
     }
 }

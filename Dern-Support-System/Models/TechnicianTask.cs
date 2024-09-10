@@ -4,7 +4,7 @@
     {
         public int TechnicianTaskId { get; set; }
         public int TechnicianId { get; set; }
-        public Technician technician { get; set; }
+        public Technician Technician { get; set; }
 
         public string Title { get; set; }
         public string Description { get; set; }

@@ -83,19 +83,22 @@ namespace Dern_Support_System.Controllers
         }
 
         // GET: api/Technicians/{id}/allProjects
-        [HttpGet("{id}/allProjects")]
-        public async Task<ActionResult<List<Project>>> GetProjectsForTechnician(int id)
+        [HttpGet("{id}/allTasks")]
+        public async Task<ActionResult<List<TechnicianTask>>> GetTasksForTechnician(int id)
         {
-            var projects = await _technicianService.GetProjectsForTechnician(id);
-            if (projects == null)
+            var tasks = await _technicianService.GetTasksForTechnician(id);
+
+            if (tasks == null || !tasks.Any())
             {
-                return NotFound($"No projects found for Technician with ID {id}.");
+                return NotFound($"No tasks found for Technician with ID {id}.");
             }
-            return Ok(projects);
+
+            return Ok(tasks);
         }
 
+
         // POST: api/Technicians/SubmitRequest
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "Technician")]
         [HttpPost("SubmitRequest")]
         public async Task<ActionResult<TechnicianTask>> SubmitARequest(TechnicianTask technicianTask)
         {

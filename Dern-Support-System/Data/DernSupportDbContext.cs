@@ -21,9 +21,7 @@ namespace Dern_Support_System.Data
         public DbSet<KnowledgeBase> KnowledgeBases { get; set; }
         public DbSet<Technician> Technicians { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<TechnicianTask> TechnicianTasksDb { get; set; }
-        public DbSet<TechnicianProjects> TechnicianProjectsDBset { get; set; }
+        public DbSet<TechnicianTask> TechnicianTasks { get; set; }
 
         // DbSet for the join table
         public DbSet<RepairJobSparePart> RepairJobSpareParts { get; set; }
@@ -32,32 +30,18 @@ namespace Dern_Support_System.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuring relationships
-            modelBuilder.Entity<TechnicianProjects>().HasKey(pk => new { pk.ProjectId, pk.TechnicianId });
+            // Composite Key for RepairJobSparePart
+            modelBuilder.Entity<RepairJobSparePart>()
+                .HasKey(rjs => new { rjs.RepairJobId, rjs.SparePartId });
 
-            modelBuilder.Entity<TechnicianProjects>()
-                .HasOne(ep => ep.Technician)
-                .WithMany(e => e.technicianProjects)
-                .HasForeignKey(e => e.TechnicianId);
-
-            modelBuilder.Entity<TechnicianTask>()
-                .HasOne(ep => ep.technician)
-                .WithMany(e => e.technicianTasks)
-                .HasForeignKey(e => e.TechnicianId);
-
-            modelBuilder.Entity<TechnicianProjects>()
-                .HasOne(ep => ep.Project)
-                .WithMany(e => e.technicianProjects)
-                .HasForeignKey(e => e.ProjectId);
-
-            // Customer <-> SupportRequest
+            // Customer <-> SupportRequest (One-to-Many)
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.SupportRequests)
                 .WithOne(s => s.Customer)
                 .HasForeignKey(s => s.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Customer <-> Feedback
+            // Customer <-> Feedback (One-to-Many)
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Feedbacks)
                 .WithOne(f => f.Customer)
@@ -94,10 +78,6 @@ namespace Dern_Support_System.Data
                 .WithOne(rjs => rjs.SparePart)
                 .HasForeignKey(rjs => rjs.SparePartId);
 
-            // Composite Key for RepairJobSparePart
-            modelBuilder.Entity<RepairJobSparePart>()
-                .HasKey(rjs => new { rjs.RepairJobId, rjs.SparePartId });
-
             // KnowledgeBase <-> SupportRequest (One-to-Many)
             modelBuilder.Entity<KnowledgeBase>()
                 .HasMany(k => k.SupportRequests)
@@ -109,6 +89,12 @@ namespace Dern_Support_System.Data
                 .HasOne(f => f.SupportRequest)
                 .WithMany(s => s.Feedback)
                 .HasForeignKey(f => f.SupportRequestId);
+
+            // Technician <-> TechnicianTask (One-to-Many)
+            modelBuilder.Entity<TechnicianTask>()
+                .HasOne(tt => tt.Technician)
+                .WithMany(t => t.TechnicianTasks)
+                .HasForeignKey(tt => tt.TechnicianId);
 
             // Seeding roles with permissions
             SeedRoles(modelBuilder, "Admin", "update", "read", "delete", "create");
@@ -126,7 +112,7 @@ namespace Dern_Support_System.Data
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             };
 
-            // Add claims for the users
+            // Add claims for the roles
             var claims = permissions.Select(permission => new IdentityRoleClaim<string>
             {
                 Id = Guid.NewGuid().GetHashCode(),

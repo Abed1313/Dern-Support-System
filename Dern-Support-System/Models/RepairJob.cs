@@ -7,14 +7,12 @@
         public DateTime ScheduledDate { get; set; }
         public int TechnicianId { get; set; }
         public string Status { get; set; }
-        public DateTime? CompletionDate { get; set; } // Nullable if not yet completed
-        public TimeSpan? TimeTaken { get; set; } // Nullable if not yet completed
+        public DateTime? CompletionDate { get; set; }
+        public TimeSpan? TimeTaken { get; set; }
 
         // Relationships
-        public SupportRequest SupportRequest { get; set; } // Many-to-One
-        public Technician Technician { get; set; } // Many-to-One
-
-        // Many-to-Many relationship with SparePart
+        public SupportRequest SupportRequest { get; set; }
+        public Technician Technician { get; set; }
         public ICollection<RepairJobSparePart> RepairJobSpareParts { get; set; }
     }
 }
