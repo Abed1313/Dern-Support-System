@@ -1,0 +1,10 @@
+﻿namespace Dern_Support_System.Models.DTO.Response
+{
+    public class UserDto
+    {
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public string Token { get; set; }
+        public IList<string> Roles { get; set; } // Add this property to handle roles during registration
+    }
+}
