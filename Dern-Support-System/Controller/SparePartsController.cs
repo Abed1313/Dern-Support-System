@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Dern_Support_System.Models;
 using Dern_Support_System.Models.DTO;
 using Dern_Support_System.Repository.interfaces;
+using Microsoft.EntityFrameworkCore;
+using Dern_Support_System.Data;
 
 namespace Dern_Support_System.Controller
 {
@@ -12,10 +15,12 @@ namespace Dern_Support_System.Controller
     public class SparePartsController : ControllerBase
     {
         private readonly ISparePart _sparePartRepository;
+        private readonly DernSupportDbContext _dbContext;
 
-        public SparePartsController(ISparePart sparePartRepository)
+        public SparePartsController(ISparePart sparePartRepository, DernSupportDbContext dbContext)
         {
             _sparePartRepository = sparePartRepository;
+            _dbContext = dbContext;
         }
 
         // GET: api/SpareParts
@@ -41,6 +46,41 @@ namespace Dern_Support_System.Controller
             }
             return Ok(sparePart);
         }
+
+        // GET: api/SpareParts/search
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(
+                    [FromQuery] string partName = null,
+                    [FromQuery] int? minStockLevel = null,
+                    [FromQuery] int? maxStockLevel = null)
+        {
+            var query = _dbContext.SpareParts.AsQueryable();
+
+            if (!string.IsNullOrEmpty(partName))
+            {
+                query = query.Where(sp => sp.PartName.Contains(partName));
+            }
+
+            if (minStockLevel.HasValue)
+            {
+                query = query.Where(sp => sp.StockLevel >= minStockLevel.Value);
+            }
+
+            if (maxStockLevel.HasValue)
+            {
+                query = query.Where(sp => sp.StockLevel <= maxStockLevel.Value);
+            }
+
+            var spareParts = await query.ToListAsync();
+
+            if (spareParts == null || !spareParts.Any())
+            {
+                return NotFound("No spare parts found matching the search criteria.");
+            }
+
+            return Ok(spareParts);
+        }
+
 
         // PUT: api/SpareParts/5
         [HttpPut("{id}")]

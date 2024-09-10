@@ -98,7 +98,8 @@ namespace Dern_Support_System.Controllers
 
 
         // POST: api/Technicians/SubmitRequest
-        [Authorize(Roles = "Technician")]
+        [Authorize(Roles = "BusinessCustomer")]
+        [Authorize(Roles = "IndividualCustomer")]
         [HttpPost("SubmitRequest")]
         public async Task<ActionResult<TechnicianTask>> SubmitARequest(TechnicianTask technicianTask)
         {
