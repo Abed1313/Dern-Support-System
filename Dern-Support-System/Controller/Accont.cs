@@ -21,13 +21,13 @@ namespace Dern_Support_System.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult> Register(RegisterUserDTO registerEmployeeDTO)
         {
-            var response = await _userManager.Register(registerEmployeeDTO);
+            var response = await _userManager.Register(registerEmployeeDTO, this.ModelState);
 
-            if (response.Success)
+            if (ModelState.IsValid)
             {
-                return Ok(response.User);
+                return Ok(response);
             }
-            return BadRequest(response.Message);
+            return BadRequest(ModelState);
         }
 
 

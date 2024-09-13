@@ -8,7 +8,7 @@
         public int TechnicianId { get; set; }
         public string Status { get; set; }
         public DateTime? CompletionDate { get; set; }
-        public TimeSpan? TimeTaken { get; set; }
+        public DateTime? TimeTaken { get; set; }
 
         // Relationships
         public SupportRequest SupportRequest { get; set; }

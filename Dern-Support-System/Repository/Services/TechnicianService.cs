@@ -78,13 +78,37 @@ namespace Dern_Support_System.Repository.Services
                 .ToListAsync();
         }
 
-        public async Task<TechnicianTask> SubmitARequest(TechnicianTask technicianTask)
+        public async Task<TechnicianTask> SubmitARequest(SubmetAddTask technicianTaskDto)
         {
-            _dbContext.TechnicianTasks.Add(technicianTask);
-            await _dbContext.SaveChangesAsync();
+            if (string.IsNullOrEmpty(technicianTaskDto.Title) || string.IsNullOrEmpty(technicianTaskDto.Description) || string.IsNullOrEmpty(technicianTaskDto.Status))
+            {
+                throw new ArgumentException("Title, Description, and Status are required.");
+            }
 
-            return technicianTask;
+            try
+            {
+                // Map the DTO to the entity
+                var newTask = new TechnicianTask
+                {
+                    Title = technicianTaskDto.Title,
+                    Description = technicianTaskDto.Description,
+                    Status = technicianTaskDto.Status,
+                    TechnicianId = technicianTaskDto.TechnicianId // Ensure TechnicianId is correctly set
+                };
+
+                _dbContext.TechnicianTasks.Add(newTask);
+                await _dbContext.SaveChangesAsync();
+
+                return newTask;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                throw new Exception("Error occurred while submitting the request.", ex);
+            }
         }
+
+
 
         public async Task<List<TechnicianTask>> GetAllSubmittedTasks()
         {
@@ -96,12 +120,14 @@ namespace Dern_Support_System.Repository.Services
             var task = await _dbContext.TechnicianTasks.FindAsync(taskId);
             if (task == null)
             {
-                throw new Exception("Task not found");
+                return null; // Return null instead of throwing an exception
             }
+
             task.Status = status;
             await _dbContext.SaveChangesAsync();
 
             return task;
         }
+
     }
 }

@@ -98,17 +98,28 @@ namespace Dern_Support_System.Controllers
 
 
         // POST: api/Technicians/SubmitRequest
-        [Authorize(Roles = "BusinessCustomer")]
-        [Authorize(Roles = "IndividualCustomer")]
+       
         [HttpPost("SubmitRequest")]
-        public async Task<ActionResult<TechnicianTask>> SubmitARequest(TechnicianTask technicianTask)
+        public async Task<ActionResult<TechnicianTask>> SubmitARequest(SubmetAddTask technicianTask)
         {
-            var newTask = await _technicianService.SubmitARequest(technicianTask);
-            return Ok(newTask);
+            try
+            {
+                var newTask = await _technicianService.SubmitARequest(technicianTask);
+                return CreatedAtAction(nameof(SubmitARequest), new { id = newTask.TechnicianTaskId }, newTask);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
+
         // GET: api/Technicians/GetTechniciansRequests
-        [Authorize(Roles = "Admin")]
         [HttpGet("GetTechniciansRequests")]
         public async Task<ActionResult<List<TechnicianTask>>> GetAllTasks()
         {
@@ -130,13 +141,22 @@ namespace Dern_Support_System.Controllers
                 return BadRequest("Status is required.");
             }
 
-            var updatedTask = await _technicianService.UpdateRequestStatus(taskId, status);
-            if (updatedTask == null)
+            try
             {
-                return NotFound($"No task found with ID {taskId}.");
-            }
+                var updatedTask = await _technicianService.UpdateRequestStatus(taskId, status);
+                if (updatedTask == null)
+                {
+                    return NotFound($"No task found with ID {taskId}.");
+                }
 
-            return Ok(new { message = "Request status updated", task = updatedTask });
+                return Ok(new { message = "Request status updated", task = updatedTask });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for further investigation
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
     }
 }

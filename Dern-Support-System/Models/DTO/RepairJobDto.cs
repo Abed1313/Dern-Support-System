@@ -8,8 +8,7 @@
         public int TechnicianId { get; set; } // Nullable if not yet assigned
         public string Status { get; set; }
         public DateTime? CompletionDate { get; set; } // Nullable if not completed
-        public TimeSpan? TimeTaken { get; set; } // Nullable if not completed
-        public List<int> SparePartIds { get; set; } // List of spare part IDs associated with the job
-
+        public DateTime? TimeTaken { get; set; } // Change to TimeSpan?
     }
+
 }

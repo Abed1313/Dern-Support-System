@@ -7,7 +7,6 @@ namespace Dern_Support_System.Repository.interfaces
     {
         Task<IEnumerable<Customer>> GetAllCustomersAsync();
         Task<Customer> GetCustomerByIdAsync(int customerId);
-        Task<Customer> AddCustomerAsync(CustomerDto customerDto);
         Task<Customer> UpdateCustomerAsync(CustomerDto customerDto, int customerId);
         Task DeleteCustomerAsync(int customerId);
     }

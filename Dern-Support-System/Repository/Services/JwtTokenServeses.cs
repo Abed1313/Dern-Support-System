@@ -44,29 +44,20 @@ namespace Tunify_Platform.Repositories.Servises
 
         public async Task<string> GenerateToken(AppUser user, TimeSpan expiryDate)
         {
-            var userPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
-            if (userPrincipal == null)
+            var userPrincliple = await _signInManager.CreateUserPrincipalAsync(user);
+            if (userPrincliple == null)
             {
-                throw new InvalidOperationException("Failed to create user principal.");
+                return null;
             }
 
-            var signingKey = GetSecurityKey(_configuration);
-            if (signingKey == null)
-            {
-                throw new InvalidOperationException("Signing key not configured properly.");
-            }
+            var signInKey = GetSecurityKey(_configuration);
 
-            // Add custom claims
-            var claims = new List<Claim>
-            {
-                new Claim("Email", user.Email),
-                new Claim(ClaimTypes.Role, "Admin") // Ensure this matches how roles are added
-            };
-            var token = new JwtSecurityToken(
+            var token = new JwtSecurityToken
+                (
                 expires: DateTime.UtcNow + expiryDate,
-                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                claims: claims
-            );
+                signingCredentials: new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256),
+                claims: userPrincliple.Claims
+                );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

@@ -13,7 +13,7 @@ namespace Dern_Support_System.Repository.interfaces
 
         // New Tasks
         Task<List<TechnicianTask>> GetTasksForTechnician(int technicianId);
-        Task<TechnicianTask> SubmitARequest(TechnicianTask technicianTask);
+        Task<TechnicianTask> SubmitARequest(SubmetAddTask technicianTask);
         Task<List<TechnicianTask>> GetAllSubmittedTasks();
         Task<TechnicianTask> UpdateRequestStatus(int taskId, string status);
     }

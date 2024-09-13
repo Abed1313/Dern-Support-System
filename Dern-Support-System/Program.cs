@@ -90,6 +90,18 @@ namespace Dern_Support_System
                     policy.RequireClaim("Email", "abedradwan84.5@gmail.com"));
             });
 
+            // Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
             // Configure Swagger
             builder.Services.AddSwaggerGen(c =>
             {
@@ -146,7 +158,7 @@ namespace Dern_Support_System
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseCors("AllowReactApp");
             // Enable Swagger Middleware
             app.UseSwagger();
             app.UseSwaggerUI(options =>

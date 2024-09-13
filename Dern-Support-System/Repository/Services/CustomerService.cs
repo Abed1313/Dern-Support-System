@@ -26,20 +26,7 @@ namespace Dern_Support_System.Repository.Services
             return customer;
         }
 
-        public async Task<Customer> AddCustomerAsync(CustomerDto customerDto)
-        {
-            var customer = new Customer
-            {
-                Name = customerDto.Name,
-                Email = customerDto.Email,
-                Address = customerDto.Address,
-                PhoneNumber = customerDto.PhoneNumber,
-                CustomerType = customerDto.CustomerType,
-            };
-            _customerRepository.Customers.Add(customer);
-            await _customerRepository.SaveChangesAsync();
-            return customer;
-        }
+       
 
         public async Task<Customer> UpdateCustomerAsync(CustomerDto customerDto, int customerId)
         {

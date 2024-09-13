@@ -30,116 +30,119 @@ namespace Dern_Support_System.Repository.Services
         }
 
         // Register
-        public async Task<RegisterResponse> Register(RegisterUserDTO registerUserDTO)
+        public async Task<RegisterResponse> Register(RegisterUserDTO registerUserDTO, ModelStateDictionary modelState)
         {
+            if (!registerUserDTO.Roles.Contains("BusinessCustomer") && !registerUserDTO.Roles.Contains("IndividualCustomer") && !registerUserDTO.Roles.Contains("Admin"))
+            {
+                throw new ArgumentException("User must have either the 'BusinessCustomer' or 'IndividualCustomer' role to register.");
+            }
             // Register the user
             var user = new AppUser
             {
                 UserName = registerUserDTO.UserName,
                 Email = registerUserDTO.Email,
             };
-
             var result = await _userManager.CreateAsync(user, registerUserDTO.Password);
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                await _userManager.AddToRolesAsync(user, registerUserDTO.Roles);
+                foreach (var role in registerUserDTO.Roles)
+                {
+                    switch (role)
+                    {
+                        case "Admin":
+                            var customer = new Customer
+                            {
+                                Name = registerUserDTO.UserName,
+                                Email = registerUserDTO.Email,
+                                PhoneNumber = registerUserDTO.PhoneNumber,
+                                Address = registerUserDTO.Address,
+                                CustomerType = "Admin",
+                                AppUserId = user.Id,
+
+                            };
+                            break;
+                        case "IndividualCustomer":
+                            customer = new Customer
+                            {
+                                Name = registerUserDTO.UserName,
+                                Email = registerUserDTO.Email,
+                                PhoneNumber = registerUserDTO.PhoneNumber,
+                                Address = registerUserDTO.Address,
+                                CustomerType = "IndividualCustomer",
+                                AppUserId = user.Id
+                            };
+                            break;
+                        case "BusinessCustomer":
+                            customer = new Customer
+                            {
+                                Name = registerUserDTO.UserName,
+                                Email = registerUserDTO.Email,
+                                PhoneNumber = registerUserDTO.PhoneNumber,
+                                Address = registerUserDTO.Address,
+                                CustomerType = "BusinessCustomer",
+                                AppUserId = user.Id
+                            };
+                            break;
+                    }
+                }
+                await _context.SaveChangesAsync();
+
                 return new RegisterResponse
                 {
-                    Success = false,
-                    Message = errors
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Token = await JwtTokenServeses.GenerateToken(user, TimeSpan.FromMinutes(7)),
+                    Roles = await _userManager.GetRolesAsync(user)
                 };
             }
-
-            // Create a corresponding Customer record based on the role
-            if (registerUserDTO.Roles.Contains("Admin"))
-            {
-                // Create an Admin customer
-                var adminCustomer = new Customer
-                {
-                    Name = registerUserDTO.UserName,
-                    Email = registerUserDTO.Email,
-                    PhoneNumber = registerUserDTO.PhoneNumber,
-                    Address = registerUserDTO.Address,
-                    CustomerType = "Admin",
-                    AppUserId = user.Id
-                };
-                _context.Customers.Add(adminCustomer);
-            }
-            else if (registerUserDTO.Roles.Contains("IndividualCustomer"))
-            {
-                // Create an Individual customer
-                var individualCustomer = new Customer
-                {
-                    Name = registerUserDTO.UserName,
-                    Email = registerUserDTO.Email,
-                    PhoneNumber = registerUserDTO.PhoneNumber,
-                    Address = registerUserDTO.Address,
-                    CustomerType = "IndividualCustomer",
-                    AppUserId = user.Id
-                };
-                _context.Customers.Add(individualCustomer);
-            }
-            else if (registerUserDTO.Roles.Contains("BusinessCustomer"))
-            {
-                // Create a Business customer
-                var businessCustomer = new Customer
-                {
-                    Name = registerUserDTO.UserName,
-                    Email = registerUserDTO.Email,
-                    PhoneNumber = registerUserDTO.PhoneNumber,
-                    Address = registerUserDTO.Address,
-                    CustomerType = "BusinessCustomer",
-                    AppUserId = user.Id
-                };
-                _context.Customers.Add(businessCustomer);
-            }
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
-
-            // Assign the role(s) to the user
-            foreach (var role in registerUserDTO.Roles)
-            {
-                await _userManager.AddToRoleAsync(user, role);
-            }
-
-            return new RegisterResponse
-            {
-                Success = true,
-                User = user
-            };
+            throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
         }
-
-
-
-        // Login, Logout, DeleteAccount, etc. remain unchanged...
-
 
 
         // Login
         public async Task<UserDto> LoginUser(string Username, string Password)
             {
                 var user = await _userManager.FindByNameAsync(Username);
-                if (user == null)
-                {
-                    return null; // or return a custom error indicating user not found
-                }
-
-                bool passValidation = await _userManager.CheckPasswordAsync(user, Password);
-                if (passValidation)
-                {
-                    return new UserDto()
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Token = await JwtTokenServeses.GenerateToken(user, TimeSpan.FromDays(14))
-                    };
-                }
-                return null;
+            if (user == null || !(await _userManager.CheckPasswordAsync(user, Password)))
+            {
+                return null; // or return a custom error indicating invalid credentials
             }
 
-            // Logout
-            public async Task<UserDto> LogoutUser(string Username)
+            // Generate the token and roles
+            var token = await JwtTokenServeses.GenerateToken(user, TimeSpan.FromDays(14));
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Token = await JwtTokenServeses.GenerateToken(user, TimeSpan.FromDays(14)),
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+            }
+        //public async Task<UserDto> LoginUser(string Username, string Password)
+        //{
+        //    var user = await _userManager.FindByNameAsync(Username);
+        //    if (user == null)
+        //    {
+        //        return null; // or return a custom error indicating user not found
+        //    }
+
+        //    bool passValidation = await _userManager.CheckPasswordAsync(user, Password);
+        //    if (passValidation)
+        //    {
+        //        return new UserDto()
+        //        {
+        //            Id = user.Id,
+        //            UserName = user.UserName,
+        //            Token = await JwtTokenServeses.GenerateToken(user, TimeSpan.FromDays(14))
+        //        };
+        //    }
+        //    return null;
+        //}
+        // Logout
+        public async Task<UserDto> LogoutUser(string Username)
             {
                 var user = await _userManager.FindByNameAsync(Username);
                 if (user == null)
@@ -169,22 +172,23 @@ namespace Dern_Support_System.Repository.Services
 
 
             }
-        // Delete User
-        public async Task<LogDTo> DeleteAccount(string username)
-        {
-            var account = await _userManager.FindByNameAsync(username);
-            if (account == null)
+            // Delete User
+            public async Task<LogDTo> DeleteAccount(string username)
             {
-                throw new Exception("Account not found.");
-            }
+                var account = await _userManager.FindByNameAsync(username);
+                if (account == null)
+                {
+                    throw new Exception("Account not found.");
+                }
 
-            await _userManager.DeleteAsync(account);
-            return new LogDTo
-            {
-                Id = account.Id,
-                UserName = account.UserName
-            };
+                await _userManager.DeleteAsync(account);
+                return new LogDTo
+                {
+                    Id = account.Id,
+                    UserName = account.UserName
+                };
+            }
         }
-    }
-    }
+    } 
+
 

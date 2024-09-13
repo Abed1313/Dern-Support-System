@@ -9,7 +9,7 @@ namespace Dern_Support_System.Repository.interfaces
     public interface IUser
     {
         //Add regester
-        Task<RegisterResponse> Register(RegisterUserDTO registerUserDTO);
+        Task<RegisterResponse> Register(RegisterUserDTO registerUserDTO, ModelStateDictionary modelState);
 
         // Add Login 
         public Task<UserDto> LoginUser(string Username , string Password);

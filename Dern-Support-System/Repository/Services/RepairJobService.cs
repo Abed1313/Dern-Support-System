@@ -50,12 +50,25 @@ namespace Dern_Support_System.Repository.Services
 
             existingRepairJob.ScheduledDate = repairJobDto.ScheduledDate;
             existingRepairJob.TechnicianId = repairJobDto.TechnicianId;
-            if (!string.IsNullOrEmpty(repairJobDto.Status)) existingRepairJob.Status = repairJobDto.Status;
+            existingRepairJob.Status = repairJobDto.Status; // Update Status
+
+            // Update CompletionDate and TimeTaken if they are provided
+            if (repairJobDto.CompletionDate.HasValue)
+            {
+                existingRepairJob.CompletionDate = repairJobDto.CompletionDate.Value;
+            }
+
+            if (repairJobDto.TimeTaken.HasValue)
+            {
+                existingRepairJob.TimeTaken = repairJobDto.TimeTaken.Value;
+            }
 
             await _dbContext.SaveChangesAsync();
 
             return existingRepairJob;
         }
+
+
         public async Task DeleteRepairJobAsync(int repairJobId)
         {
             var repairJob = await GetRepairJobByIdAsync(repairJobId);

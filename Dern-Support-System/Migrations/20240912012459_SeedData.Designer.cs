@@ -4,6 +4,7 @@ using Dern_Support_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dern_Support_System.Migrations
 {
     [DbContext(typeof(DernSupportDbContext))]
-    partial class DernSupportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240912012459_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,88 +187,6 @@ namespace Dern_Support_System.Migrations
                     b.HasKey("KnowledgeBaseId");
 
                     b.ToTable("KnowledgeBases");
-
-                    b.HasData(
-                        new
-                        {
-                            KnowledgeBaseId = 1,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "The printer is not responding when trying to print.",
-                            SolutionSteps = "1. Check if the printer is powered on.\n2. Ensure the printer is connected to the computer.\n3. Restart the printer and try again.",
-                            Title = "Printer Not Working"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 2,
-                            HardwareOrSoftware = "Software",
-                            ProblemDescription = "Error occurs during the installation of software X.",
-                            SolutionSteps = "1. Ensure that the installation package is not corrupted.\n2. Check for sufficient disk space.\n3. Run the installer as an administrator.",
-                            Title = "Software Installation Error"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 3,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "Computer is running slower than usual.",
-                            SolutionSteps = "1. Check for any background programs consuming too many resources.\n2. Run a disk cleanup and defragmentation.\n3. Consider upgrading the RAM if necessary.",
-                            Title = "Slow Computer Performance"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 4,
-                            HardwareOrSoftware = "Software",
-                            ProblemDescription = "Unable to connect to the internet.",
-                            SolutionSteps = "1. Restart the modem and router.\n2. Check if the network cables are properly connected.\n3. Verify the network adapter settings.",
-                            Title = "Internet Connectivity Issue"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 5,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "The computer crashes with a blue screen displaying an error message.",
-                            SolutionSteps = "1. Check if any recent hardware changes or driver installations have been made.\n2. Ensure all drivers are up to date.\n3. Run a memory diagnostic test to check for faulty RAM.\n4. Perform a system restore to a previous stable state.",
-                            Title = "Blue Screen of Death (BSOD)"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 6,
-                            HardwareOrSoftware = "Software",
-                            ProblemDescription = "Emails are not syncing in the mail client (e.g., Outlook, Thunderbird).",
-                            SolutionSteps = "1. Check if the internet connection is stable.\n2. Verify email account settings (server details, port numbers, and authentication).\n3. Restart the email client or reboot the device.\n4. Reconfigure the email account if necessary.",
-                            Title = "Email Not Syncing"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 7,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "The computer fails to load the operating system during startup.",
-                            SolutionSteps = "1. Check for any loose or disconnected cables inside the computer.\n2. Ensure the boot order is correctly configured in the BIOS.\n3. Use the OS recovery tool to repair the bootloader.\n4. If the issue persists, reinstall the operating system.",
-                            Title = "Operating System Won't Boot"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 8,
-                            HardwareOrSoftware = "Software",
-                            ProblemDescription = "The application crashes unexpectedly when trying to perform a specific action.",
-                            SolutionSteps = "1. Check if the application is up to date with the latest version.\n2. Review the application logs for any error messages or exceptions.\n3. Uninstall and reinstall the application.\n4. If the issue persists, contact the application's support team.",
-                            Title = "Application Crashing"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 9,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "The computer is unable to read from or write to the hard drive, and data is inaccessible.",
-                            SolutionSteps = "1. Check if the hard drive is properly connected to the motherboard.\n2. Use disk repair tools (e.g., chkdsk) to scan for bad sectors.\n3. If the hard drive is beyond repair, replace it and restore data from backups.",
-                            Title = "Hard Drive Failure"
-                        },
-                        new
-                        {
-                            KnowledgeBaseId = 10,
-                            HardwareOrSoftware = "Hardware",
-                            ProblemDescription = "The network printer shows as offline and cannot receive print jobs.",
-                            SolutionSteps = "1. Restart the printer and check if it's properly connected to the network.\n2. Verify the printer's IP address and ensure it's correct in the printer settings.\n3. Remove and re-add the printer on the computer.\n4. Check firewall settings to ensure the printer is not being blocked.",
-                            Title = "Network Printer Offline"
-                        });
                 });
 
             modelBuilder.Entity("Dern_Support_System.Models.Quote", b =>
@@ -450,27 +371,6 @@ namespace Dern_Support_System.Migrations
                             Availability = "Not Available",
                             Name = "Jane Smith",
                             Specialization = "HVAC"
-                        },
-                        new
-                        {
-                            TechnicianId = 4,
-                            Availability = "Available",
-                            Name = "John Doe",
-                            Specialization = "Electrical"
-                        },
-                        new
-                        {
-                            TechnicianId = 5,
-                            Availability = "Busy",
-                            Name = "Jane Smith",
-                            Specialization = "HVAC"
-                        },
-                        new
-                        {
-                            TechnicianId = 6,
-                            Availability = "Available",
-                            Name = "Robert Johnson",
-                            Specialization = "Plumbing"
                         });
                 });
 
@@ -519,46 +419,6 @@ namespace Dern_Support_System.Migrations
                             Status = "Pending",
                             TechnicianId = 2,
                             Title = "Broken Circuit"
-                        },
-                        new
-                        {
-                            TechnicianTaskId = 3,
-                            Description = "Inspect wiring in server room for damage.",
-                            Status = "Pending",
-                            TechnicianId = 1,
-                            Title = "Check Wiring"
-                        },
-                        new
-                        {
-                            TechnicianTaskId = 4,
-                            Description = "Replace faulty light fixture in lobby.",
-                            Status = "In Progress",
-                            TechnicianId = 3,
-                            Title = "Repair Light Fixture"
-                        },
-                        new
-                        {
-                            TechnicianTaskId = 5,
-                            Description = "Ensure all emergency lighting is operational.",
-                            Status = "Completed",
-                            TechnicianId = 2,
-                            Title = "Test Emergency Lighting"
-                        },
-                        new
-                        {
-                            TechnicianTaskId = 6,
-                            Description = "Upgrade the electrical panel to handle increased load.",
-                            Status = "Pending",
-                            TechnicianId = 3,
-                            Title = "Upgrade Electrical Panel"
-                        },
-                        new
-                        {
-                            TechnicianTaskId = 7,
-                            Description = "Check HVAC system for electrical issues.",
-                            Status = "In Progress",
-                            TechnicianId = 1,
-                            Title = "Inspect HVAC System"
                         });
                 });
 
@@ -592,21 +452,21 @@ namespace Dern_Support_System.Migrations
                         new
                         {
                             Id = "admin",
-                            ConcurrencyStamp = "66abc4ff-34ce-4a70-82a6-b07c5b9f7fae",
+                            ConcurrencyStamp = "7317e49b-1f47-483f-9693-609b2869e21e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "businesscustomer",
-                            ConcurrencyStamp = "4072a0a6-0d0e-4c74-bfc7-e4949d5bf1f5",
+                            ConcurrencyStamp = "a4bc50c6-621d-4aed-b379-dbdbfbec7b05",
                             Name = "BusinessCustomer",
                             NormalizedName = "BUSINESSCUSTOMER"
                         },
                         new
                         {
                             Id = "individualcustomer",
-                            ConcurrencyStamp = "dcc451cb-f662-4af2-a47e-2458977af000",
+                            ConcurrencyStamp = "565eb0bd-3752-4d73-ac00-f0bd4ceb533f",
                             Name = "IndividualCustomer",
                             NormalizedName = "INDIVIDUALCUSTOMER"
                         });
@@ -639,84 +499,84 @@ namespace Dern_Support_System.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2055279588,
+                            Id = 237156214,
                             ClaimType = "permission",
                             ClaimValue = "update",
                             RoleId = "admin"
                         },
                         new
                         {
-                            Id = 750832786,
+                            Id = -651211210,
                             ClaimType = "permission",
                             ClaimValue = "read",
                             RoleId = "admin"
                         },
                         new
                         {
-                            Id = -1862407115,
+                            Id = 1279504267,
                             ClaimType = "permission",
                             ClaimValue = "delete",
                             RoleId = "admin"
                         },
                         new
                         {
-                            Id = -1870649806,
+                            Id = 1827254477,
                             ClaimType = "permission",
                             ClaimValue = "create",
                             RoleId = "admin"
                         },
                         new
                         {
-                            Id = 467305327,
+                            Id = 1937948768,
                             ClaimType = "permission",
                             ClaimValue = "update",
                             RoleId = "businesscustomer"
                         },
                         new
                         {
-                            Id = 1642459346,
+                            Id = -2093852423,
                             ClaimType = "permission",
                             ClaimValue = "read",
                             RoleId = "businesscustomer"
                         },
                         new
                         {
-                            Id = 971440829,
+                            Id = 1482293740,
                             ClaimType = "permission",
                             ClaimValue = "delete",
                             RoleId = "businesscustomer"
                         },
                         new
                         {
-                            Id = 1730885888,
+                            Id = -576382775,
                             ClaimType = "permission",
                             ClaimValue = "create",
                             RoleId = "businesscustomer"
                         },
                         new
                         {
-                            Id = -1863342208,
+                            Id = 593798803,
                             ClaimType = "permission",
                             ClaimValue = "update",
                             RoleId = "individualcustomer"
                         },
                         new
                         {
-                            Id = -1289150110,
+                            Id = 1497793244,
                             ClaimType = "permission",
                             ClaimValue = "read",
                             RoleId = "individualcustomer"
                         },
                         new
                         {
-                            Id = -1343740615,
+                            Id = 1142204328,
                             ClaimType = "permission",
                             ClaimValue = "delete",
                             RoleId = "individualcustomer"
                         },
                         new
                         {
-                            Id = 1517946740,
+                            Id = 394852162,
                             ClaimType = "permission",
                             ClaimValue = "create",
                             RoleId = "individualcustomer"
